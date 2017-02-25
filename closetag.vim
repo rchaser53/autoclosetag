@@ -4,5 +4,7 @@ function Get()
   exec "normal! e :echo line('.')"
   let b:afterCol = col('.')
   call cursor(b:line, b:col)
-  echo match(getline('.'), '.', col('.')-1, b:col-b:afterCol)
+  let b:length = b:afterCol-b:col
+  let b:minusLength = b:col-b:afterCol
+  echo matchstr(getline('.'), '.\{'.b:length.'}', col('.')-1, b:minusLength)
 endfunction
