@@ -8,3 +8,7 @@ function Get()
   let b:minusLength = b:col-b:afterCol
   echo matchstr(getline('.'), '.\{'.b:length.'}', col('.')-1, b:minusLength)
 endfunction
+
+function Insert(arg)
+  exec "normal! ea ".a:arg."\<Esc>"
+endfunction
