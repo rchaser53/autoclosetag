@@ -10,5 +10,10 @@ function Get()
 endfunction
 
 function Insert(arg)
-  exec "normal! ea ".a:arg."\<Esc>"
+  exec "normal! ei ".a:arg."\<Esc>"
+endfunction
+
+function GetTag()
+  let b:poyo = matchstr(getline('.'), '\(<\(\w\|-\)*>\)\{1}')
+  echo b:poyo
 endfunction
