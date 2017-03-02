@@ -14,8 +14,9 @@ function Insert(arg)
 endfunction
 
 function GetTag()
-  let b:poyo = matchstr(getline('.'), '\(<\(\w\|-\)*>\)\{1}')
-  echo b:poyo
+  let b:wholeTag = matchstr(getline('.'), '\(<\(\w\|-\)*>\)\{1}')
+  let b:removeForward = substitute(b:wholeTag, '<', '', '')
+  return substitute(b:removeForward, '>', '', '')
 endfunction
 
 function JoinStrArray(array)
