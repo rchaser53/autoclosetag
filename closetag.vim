@@ -18,15 +18,26 @@ function GetTag()
   echo b:poyo
 endfunction
 
-function Nyan()
-  let b:aaa = ['a', 'b', 'c', 'd']
-  let b:length = len(b:aaa)
+function JoinStrArray(array)
+  let b:length = len(a:array)
   let b:index = 0
-  let b:tempStr = ""
+  let s:tempStr = ""
   while b:index < b:length
-    let b:tempStr = b:tempStr.b:aaa[b:index]
+    let s:tempStr = s:tempStr.a:array[b:index]
     let b:index += 1
   endwhile
 
-  echo b:tempStr
+  return s:tempStr
 endfunction
+
+function GetBackwardTargetLine(targetStr)
+  let b:currentLine = line('.')
+  let b:currentCol = col('.')
+  call search(a:targetStr, 'b')
+  let b:targetLine = line('.')
+  call cursor(b:currentLine, b:currentCol)
+
+  return b:targetLine
+endfunction
+
+"echo JoinStrArray(['a', 'b', 'c'])
