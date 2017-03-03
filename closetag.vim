@@ -9,8 +9,24 @@ function GetWordsUntilEndLine()
   return matchstr(getline('.'), '.\{'.b:length.'}', col('.')-1, b:minusLength)
 endfunction
 
-function Insert(arg)
-  exec "normal! ei ".a:arg."\<Esc>"
+function! s:Insert(arg)
+  exec "normal! i</".a:arg.">\<Esc>"
+endfunction
+
+function! s:GetCurrentLineTagWord()
+  return matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
+endfunction
+
+function! g:InsertTag()
+  let s:tagword = s:GetCurrentLineTagWord()
+
+  let b:line = line('.')
+  let b:col = col('.')
+
+  call search('>')
+  exec "normal! a \<Esc>"
+  call s:Insert(s:tagword)
+  call cursor(b:line,b:col)
 endfunction
 
 function GetTag()
@@ -45,12 +61,4 @@ function Tagsword()
   "let b:nyan = GetBackwardTargetLine('<')
   call search('<', 'b')
   let b:wordsUntilEnd = GetWordsUntilEndLine()
-
 endfunction
-
-function GetCurrentLineTagWord()
-  matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
-endfunction
-
-" <xxx>と</xxx>が取れる
-"
