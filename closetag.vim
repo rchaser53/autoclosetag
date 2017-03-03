@@ -1,12 +1,12 @@
-function Get()
+function GetWordsUntilEndLine()
   let b:line = line('.')
   let b:col = col('.')
-  exec "normal! e :echo line('.')"
+  exec "normal! $"
   let b:afterCol = col('.')
   call cursor(b:line, b:col)
   let b:length = b:afterCol-b:col
   let b:minusLength = b:col-b:afterCol
-  echo matchstr(getline('.'), '.\{'.b:length.'}', col('.')-1, b:minusLength)
+  return matchstr(getline('.'), '.\{'.b:length.'}', col('.')-1, b:minusLength)
 endfunction
 
 function Insert(arg)
@@ -41,4 +41,16 @@ function GetBackwardTargetLine(targetStr)
   return b:targetLine
 endfunction
 
-"echo JoinStrArray(['a', 'b', 'c'])
+function Tagsword()
+  "let b:nyan = GetBackwardTargetLine('<')
+  call search('<', 'b')
+  let b:wordsUntilEnd = GetWordsUntilEndLine()
+
+endfunction
+
+function GetCurrentLineTagWord()
+  matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
+endfunction
+
+" <xxx>と</xxx>が取れる
+"
