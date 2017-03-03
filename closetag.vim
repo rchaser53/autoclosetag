@@ -10,22 +10,28 @@ function GetWordsUntilEndLine()
 endfunction
 
 function! s:Insert(arg)
-  exec "normal! i</".a:arg.">\<Esc>"
 endfunction
 
 function! s:GetCurrentLineTagWord()
   return matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
 endfunction
 
+function! s:IsTagForward()
+  return matchstr(getline('.'), '.', col('.')-1) == '>'
+endfunction
+
 function! g:InsertTag()
-  let s:tagword = s:GetCurrentLineTagWord()
+  let b:tagword = s:GetCurrentLineTagWord()
 
   let b:line = line('.')
   let b:col = col('.')
 
-  call search('>')
-  exec "normal! a \<Esc>"
-  call s:Insert(s:tagword)
+  let b:currentTagCharacter = s:IsTagForward()
+  if (b:currentTagCharacter == 0)
+    call search('>')
+  endif
+
+  exec "normal! a</".b:tagword.">\<Esc>"
   call cursor(b:line,b:col)
 endfunction
 
