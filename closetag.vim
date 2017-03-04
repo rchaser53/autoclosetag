@@ -1,3 +1,7 @@
+if !exists('g:loadedInsertTag')
+  finish
+endif
+
 function! g:InsertClosingTag()
   let b:line = line('.')
   let b:col = col('.')
@@ -70,5 +74,3 @@ function! s:IsOutsideTag()
 
   return 0
 endfunction
-
-
