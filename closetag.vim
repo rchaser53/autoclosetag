@@ -5,12 +5,12 @@ function! g:InsertClosingTag()
   let b:isOutsideTag = s:IsOutsideTag()
   if (b:isOutsideTag == 1)
     call search('>', 'b')
-    let b:tagword = s:GetCurrentLineTagWord()
+    let b:tagword = s:GetCurrentTagWord()
     call cursor(b:line,b:col)
 
     exec "normal! a</".b:tagword.">\<Esc>"
   else
-    let b:tagword = s:GetCurrentLineTagWord()
+    let b:tagword = s:GetCurrentTagWord()
 
     let b:isTagForwardEnd = s:IsTagForwardEnd()
     if (b:isTagForwardEnd == 0)
@@ -23,8 +23,21 @@ function! g:InsertClosingTag()
   call cursor(b:line,b:col)
 endfunction
 
-function! s:GetCurrentLineTagWord()
-  return matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
+function! s:GetCurrentTagWord()
+  let b:targetword = matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
+
+  if b:targetword == ''
+    let b:line = line('.')
+    let b:col = col('.')
+
+    call search('<', 'b')
+    let b:tagword = matchstr(getline('.'), '<\zs\w\+\ze\_s\?')
+    call cursor(b:line, b:col)
+    return b:tagword
+  endif
+
+  echo b:targetword
+  return b:targetword
 endfunction
 
 function! s:IsTagForwardEnd()
