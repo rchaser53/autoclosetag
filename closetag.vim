@@ -3,44 +3,45 @@ if !exists('g:loadedInsertTag')
 endif
 
 function! g:InsertClosingTag()
-  let b:line = line('.')
-  let b:col = col('.')
 
-  let b:isOutsideTag = s:IsOutsideTag()
-  if (b:isOutsideTag == 1)
+  let l:line = line('.')
+  let l:col = col('.')
+
+  let l:isOutsideTag = s:IsOutsideTag()
+  if (l:isOutsideTag == 1)
     call search('>', 'b')
-    let b:tagword = s:GetCurrentTagWord()
-    call cursor(b:line,b:col)
+    let l:tagword = s:GetCurrentTagWord()
+    call cursor(l:line,l:col)
 
-    exec "normal! a</".b:tagword.">\<Esc>"
+    exec "normal! a</".l:tagword.">\<Esc>"
   else
-    let b:tagword = s:GetCurrentTagWord()
+    let l:tagword = s:GetCurrentTagWord()
 
-    let b:isTagForwardEnd = s:IsTagForwardEnd()
-    if (b:isTagForwardEnd == 0)
+    let l:isTagForwardEnd = s:IsTagForwardEnd()
+    if (l:isTagForwardEnd == 0)
       call search('>')
     endif
 
-    exec "normal! a</".b:tagword.">\<Esc>"
+    echo "normal! <silent> a</".l:tagword.">\<Esc>"
+    exec "normal! a</".l:tagword.">\<Esc>"
   endif
 
-  call cursor(b:line,b:col)
+  call cursor(l:line,l:col)
 endfunction
 
 function! s:GetCurrentTagWord()
-  let b:targetword = matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
+  let l:line = line('.')
+  let l:col = col('.')
 
-  if b:targetword == ''
-    let b:line = line('.')
-    let b:col = col('.')
-
+  let l:targetword = matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
+  if l:targetword == ''
     call search('<', 'b')
-    let b:tagword = matchstr(getline('.'), '<\zs\w\+\ze\_s\?')
-    call cursor(b:line, b:col)
-    return b:tagword
+    let l:tagword = matchstr(getline('.'), '<\zs\w\+\ze\_s\?')
+    call cursor(l:line, l:col)
+    return l:tagword
   endif
 
-  return b:targetword
+  return l:targetword
 endfunction
 
 function! s:IsTagForwardEnd()
@@ -48,26 +49,26 @@ function! s:IsTagForwardEnd()
 endfunction
 
 function! s:GetCharacterPosition(word)
-  let b:line = line('.')
-  let b:col = col('.')
+  let l:line = line('.')
+  let l:col = col('.')
 
   call search(a:word, 'b')
 
-  let b:targetWordLine = line('.')
-  let b:targetWordCol = col('.')
-  call cursor(b:line, b:col)
+  let l:targetWordLine = line('.')
+  let l:targetWordCol = col('.')
+  call cursor(l:line, l:col)
 
-  return [ b:targetWordLine, b:targetWordCol ]
+  return [ l:targetWordLine, l:targetWordCol ]
 endfunction
 
 function! s:IsOutsideTag()
-  let b:openAnglePosition = s:GetCharacterPosition('<')
-  let b:closeAnglePosition = s:GetCharacterPosition('>')
+  let l:openAnglePosition = s:GetCharacterPosition('<')
+  let l:closeAnglePosition = s:GetCharacterPosition('>')
 
-  if (b:openAnglePosition[0] < b:closeAnglePosition[0])
+  if (l:openAnglePosition[0] < l:closeAnglePosition[0])
     return 1
-  elseif (b:openAnglePosition[0] == b:closeAnglePosition[0])
-    if (b:openAnglePosition[1] < b:closeAnglePosition[1])
+  elseif (l:openAnglePosition[0] == l:closeAnglePosition[0])
+    if (l:openAnglePosition[1] < l:closeAnglePosition[1])
       return 1
     endif
   endif
