@@ -3,8 +3,9 @@ if !exists('g:loadedInsertTag') || g:loadedInsertTag == 0
 endif
 
 function! g:InsertClosingTag()
+  "s:GetCurrentWord()
+  GetTargetCharacter(col('.'))
   exec "normal! \<Esc>be"
-
   let l:line = line('.')
   let l:col = col('.')
 
@@ -75,4 +76,13 @@ function! s:IsOutsideTag()
   endif
 
   return 0
+endfunction
+
+function GetTargetCharacter(col)
+  echo matchstr(getline('.'), '.', col(a:col))
+endfunction
+
+function Nyan()
+  let b:aaa = col('.') + 1
+  echo col(.b:aaa.)
 endfunction
