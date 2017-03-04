@@ -2,7 +2,7 @@ function! s:GetCurrentLineTagWord()
   return matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
 endfunction
 
-function! s:IsTagForward()
+function! s:IsTagForwardEnd()
   return matchstr(getline('.'), '.', col('.')-1) == '>'
 endfunction
 
@@ -12,17 +12,24 @@ function! g:InsertClosingTag()
   let b:line = line('.')
   let b:col = col('.')
 
-  let b:currentTagCharacter = s:IsTagForward()
-  if (b:currentTagCharacter == 0)
-    call search('>')
+  let b:isOutsideTag = s:IsOutsideTag()
+
+  if (b:isOutsideTag == 1)
+    exec "normal! a</".b:tagword.">\<Esc>"
+  else
+    let b:isTagForwardEnd = s:IsTagForwardEnd()
+    if (b:isTagForwardEnd == 0)
+      call search('>')
+    endif
+
+    exec "normal! a</".b:tagword.">\<Esc>"
   endif
 
-  exec "normal! a</".b:tagword.">\<Esc>"
   call cursor(b:line,b:col)
 endfunction
 
 function! s:GetCharacterPosition(word)
-  let b:line = line('.') 
+  let b:line = line('.')
   let b:col = col('.')
 
   call search(a:word, 'b')
@@ -34,7 +41,7 @@ function! s:GetCharacterPosition(word)
   return [ b:targetWordLine, b:targetWordCol ]
 endfunction
 
-function! s:IsInsideTag()
+function! s:IsOutsideTag()
   let b:openAnglePosition = s:GetCharacterPosition('<')
   let b:closeAnglePosition = s:GetCharacterPosition('>')
 
