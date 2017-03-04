@@ -1,4 +1,4 @@
-if !exists('g:loadedInsertTag')
+if !exists('g:loadedInsertTag') || g:loadedInsertTag == 0
   finish
 endif
 
