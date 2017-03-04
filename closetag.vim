@@ -1,17 +1,3 @@
-function GetWordsUntilEndLine()
-  let b:line = line('.')
-  let b:col = col('.')
-  exec "normal! $"
-  let b:afterCol = col('.')
-  call cursor(b:line, b:col)
-  let b:length = b:afterCol-b:col
-  let b:minusLength = b:col-b:afterCol
-  return matchstr(getline('.'), '.\{'.b:length.'}', col('.')-1, b:minusLength)
-endfunction
-
-function! s:Insert(arg)
-endfunction
-
 function! s:GetCurrentLineTagWord()
   return matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
 endfunction
@@ -20,7 +6,7 @@ function! s:IsTagForward()
   return matchstr(getline('.'), '.', col('.')-1) == '>'
 endfunction
 
-function! g:InsertTag()
+function! g:InsertClosingTag()
   let b:tagword = s:GetCurrentLineTagWord()
 
   let b:line = line('.')
@@ -35,13 +21,41 @@ function! g:InsertTag()
   call cursor(b:line,b:col)
 endfunction
 
-function GetTag()
+function! s:GetCharacterPosition(word)
+  let b:line = line('.') 
+  let b:col = col('.')
+
+  call search(a:word, 'b')
+
+  let b:targetWordLine = line('.')
+  let b:targetWordCol = col('.')
+  call cursor(b:line, b:col)
+
+  return [ b:targetWordLine, b:targetWordCol ]
+endfunction
+
+function! s:IsInsideTag()
+  let b:openAnglePosition = s:GetCharacterPosition('<')
+  let b:closeAnglePosition = s:GetCharacterPosition('>')
+
+  if (b:openAnglePosition[0] < b:closeAnglePosition[0])
+    return 1
+  elseif (b:openAnglePosition[0] == b:closeAnglePosition[0])
+    if (b:openAnglePosition[1] < b:closeAnglePosition[1])
+      return 1
+    endif
+  endif
+
+  return 0
+endfunction
+
+function s:GetTag()
   let b:wholeTag = matchstr(getline('.'), '\(<\(\w\|-\)*>\)\{1}')
   let b:removeForward = substitute(b:wholeTag, '<', '', '')
   return substitute(b:removeForward, '>', '', '')
 endfunction
 
-function JoinStrArray(array)
+function s:JoinStrArray(array)
   let b:length = len(a:array)
   let b:index = 0
   let s:tempStr = ""
@@ -53,7 +67,7 @@ function JoinStrArray(array)
   return s:tempStr
 endfunction
 
-function GetBackwardTargetLine(targetStr)
+function s:GetBackwardTargetLine(targetStr)
   let b:currentLine = line('.')
   let b:currentCol = col('.')
   call search(a:targetStr, 'b')
@@ -63,8 +77,18 @@ function GetBackwardTargetLine(targetStr)
   return b:targetLine
 endfunction
 
-function Tagsword()
-  "let b:nyan = GetBackwardTargetLine('<')
+function s:Tagsword()
   call search('<', 'b')
   let b:wordsUntilEnd = GetWordsUntilEndLine()
+endfunction
+
+function s:GetWordsUntilEndLine()
+  let b:line = line('.')
+  let b:col = col('.')
+  exec "normal! $"
+  let b:afterCol = col('.')
+  call cursor(b:line, b:col)
+  let b:length = b:afterCol-b:col
+  let b:minusLength = b:col-b:afterCol
+  return matchstr(getline('.'), '.\{'.b:length.'}', col('.')-1, b:minusLength)
 endfunction
