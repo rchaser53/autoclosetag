@@ -31,11 +31,10 @@ endfunction
 function! s:GetCurrentTagWord()
   let l:line = line('.')
   let l:col = col('.')
-
-  let l:targetword = matchstr(getline('.'), '<\zs[^\s]\+\ze\>')
+  let l:targetword = matchstr(getline('.'), '<\zs\(\w\|\-\)\+\ze\>')
   if l:targetword == ''
     call search('<', 'b')
-    let l:tagword = matchstr(getline('.'), '<\zs\w\+\ze\_s\?')
+    let l:tagword = matchstr(getline('.'), '<\zs\(\w\|\-\)\+\ze\_s\?')
     call cursor(l:line, l:col)
     return l:tagword
   endif
