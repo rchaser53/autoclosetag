@@ -3,9 +3,7 @@ if !exists('g:loadedInsertTag') || g:loadedInsertTag == 0
 endif
 
 function! g:InsertClosingTag()
-  "s:GetCurrentWord()
-  GetTargetCharacter(col('.'))
-  exec "normal! \<Esc>be"
+  exec "normal! \<Esc>\<Left>"
   let l:line = line('.')
   let l:col = col('.')
 
@@ -24,7 +22,6 @@ function! g:InsertClosingTag()
       call search('>')
     endif
 
-    echo "normal! <silent> a</".l:tagword.">\<Esc>"
     exec "normal! a</".l:tagword.">\<Esc>"
   endif
 
@@ -35,7 +32,7 @@ function! s:GetCurrentTagWord()
   let l:line = line('.')
   let l:col = col('.')
 
-  let l:targetword = matchstr(getline('.'), '<\zs[^\/][^>]\+\ze>')
+  let l:targetword = matchstr(getline('.'), '<\zs[^\s]\+\ze\>')
   if l:targetword == ''
     call search('<', 'b')
     let l:tagword = matchstr(getline('.'), '<\zs\w\+\ze\_s\?')
@@ -76,13 +73,4 @@ function! s:IsOutsideTag()
   endif
 
   return 0
-endfunction
-
-function GetTargetCharacter(col)
-  echo matchstr(getline('.'), '.', col(a:col))
-endfunction
-
-function Nyan()
-  let b:aaa = col('.') + 1
-  echo col(.b:aaa.)
 endfunction
