@@ -3,6 +3,7 @@ if !exists('g:loadedInsertTag')
 endif
 
 function! g:InsertClosingTag()
+  exec "normal! \<Esc>be"
 
   let l:line = line('.')
   let l:col = col('.')
