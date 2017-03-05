@@ -3,6 +3,7 @@ if !exists('g:loadedInsertTag') || g:loadedInsertTag == 0
 endif
 
 function! g:InsertClosingTag()
+  "prevent from going next line
   exec "normal! \<Esc>\<Left>"
   let l:line = line('.')
   let l:col = col('.')
@@ -25,7 +26,8 @@ function! g:InsertClosingTag()
     exec "normal! a</".l:tagword.">\<Esc>"
   endif
 
-  call cursor(l:line,l:col)
+  " restore col
+  call cursor(l:line,l:col+1)
 endfunction
 
 function! s:GetCurrentTagWord()
