@@ -33,15 +33,15 @@ endfunction
 function! s:GetCurrentTagWord()
   let l:line = line('.')
   let l:col = col('.')
-  let l:targetword = matchstr(getline('.'), '<\zs\(\w\|\-\)\+\ze\>')
-  if l:targetword == ''
+
+  if matchstr(getline('.'), '<\zs\(\w\|\-\)\+\ze\>') == ''
     call search('<', 'b')
     let l:tagword = matchstr(getline('.'), '<\zs\(\w\|\-\)\+\ze\_s\?')
     call cursor(l:line, l:col)
     return l:tagword
   endif
 
-  return l:targetword
+  return matchstr(s:GetNearTagPosition(), '<\zs\(\w\|\-\)\+\ze\>')
 endfunction
 
 function! s:IsTagForwardEnd()
@@ -74,4 +74,27 @@ function! s:IsOutsideTag()
   endif
 
   return 0
+endfunction
+
+function! s:GetNearTagPosition()
+  let l:line = line('.')
+  let l:col = col('.')
+  call search('\zs<', 'b')
+  let l:ret = s:GetWordsUntilEndLine()
+
+  call cursor(l:line,l:col)
+  return l:ret
+endfunction
+
+function s:GetWordsUntilEndLine()
+  let l:line = line('.')
+  let l:col = col('.')
+
+  exec "normal! $"
+  let l:afterCol = col('.')
+  call cursor(l:line, l:col)
+
+  let l:length = l:afterCol-(l:col-1)
+  let l:minusLength = l:col-l:afterCol
+  return matchstr(getline('.'), '.\{'.l:length.'}', col('.')-1, l:minusLength)
 endfunction
