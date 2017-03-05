@@ -2,6 +2,8 @@
 
 a vim plugin insert easily a closing tag.
 
+![screenshot](https://github.com/rchaser53/insertclosetag/blob/master/insertclosingtag.gif)
+
 ### Usage
 
   call InsertClosingTag() 
