@@ -31,17 +31,18 @@ function! g:InsertClosingTag()
 endfunction
 
 function! s:GetCurrentTagWord()
+  let l:tagword = '\(\w\|\-\|\.\)'
   let l:line = line('.')
   let l:col = col('.')
 
-  if matchstr(getline('.'), '<\zs\(\w\|\-\)\+\ze\>') == ''
+  if matchstr(getline('.'), '<\zs'.l:tagword.'\+\ze\>') == ''
     call search('<', 'b')
-    let l:tagword = matchstr(getline('.'), '<\zs\(\w\|\-\)\+\ze\_s\?')
+    let l:tagword = matchstr(getline('.'), '<\zs'.l:tagword.'\+\ze\_s\?')
     call cursor(l:line, l:col)
     return l:tagword
   endif
 
-  return matchstr(s:GetNearTagPosition(), '<\zs\(\w\|\-\)\+\ze\>')
+  return matchstr(s:GetNearTagPosition(), '<\zs'.l:tagword.'\+\ze\>')
 endfunction
 
 function! s:IsTagForwardEnd()
@@ -97,4 +98,15 @@ function s:GetWordsUntilEndLine()
   let l:length = l:afterCol-(l:col-1)
   let l:minusLength = l:col-l:afterCol
   return matchstr(getline('.'), '.\{'.l:length.'}', col('.')-1, l:minusLength)
+endfunction
+
+function g:Nyan()
+  let b:aa = 10
+  call cursor(line('.'), b:aa)
+endfunction
+
+function g:Nyan2()
+  let b:aa = 10
+  b:aa = 11
+  call cursor(line('.'), b:aa-10)
 endfunction
