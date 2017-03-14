@@ -99,14 +99,3 @@ function s:GetWordsUntilEndLine()
   let l:minusLength = l:col-l:afterCol
   return matchstr(getline('.'), '.\{'.l:length.'}', col('.')-1, l:minusLength)
 endfunction
-
-function g:Nyan()
-  let b:aa = 10
-  call cursor(line('.'), b:aa)
-endfunction
-
-function g:Nyan2()
-  let b:aa = 10
-  b:aa = 11
-  call cursor(line('.'), b:aa-10)
-endfunction
